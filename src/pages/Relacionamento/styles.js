@@ -1,3 +1,4 @@
+import { Button } from '@material-ui/core';
 import styled from 'styled-components';
 
 export const OptionsRalacionamentos = styled.div`
@@ -14,44 +15,10 @@ export const ContainerStatus = styled.div`
   margin-bottom: 20px;
 `;
 
-export const ContainerStatusCollumn = styled.div`
-  background: #fff;
-  padding: 20px 20px 40px 20px;
-  text-align: left;
-  flex-direction: column;
-  margin-bottom: 20px;
-`;
-
-export const ContainerItemStatusCollumn = styled.div`
-  margin-bottom: 5px;
-`;
-
-export const ContainerDoughnut = styled.div`
-  width: 80%;
-  margin-left: 10%;
-  height: 230px;
-  text-align: center;
-`;
-
-export const ContainerChartBar = styled.div`
-  width: 100%;
-  height: 380px;
-  text-align: center;
-`;
-
 export const ContainerItemStatus = styled.div`
   background-color: #fff;
   float: left;
   margin-right: 5px;
-`;
-
-export const ContainerChart = styled.div`
-  margin: 5px;
-`;
-
-export const TitleChart = styled.div`
-  text-align: left;
-  width: 100%;
 `;
 
 export const BoxColorStatus = styled.div`
@@ -63,8 +30,53 @@ export const BoxColorStatus = styled.div`
   margin-right: 5px;
 `;
 
-export const BoxChart = styled.div`
-  padding: 10px;
-  background: #fff;
-  border-radius: 5px;
+export const ContainerModal = styled.div`
 `;
+
+export const HeaderModal = styled.div`
+  flex: 1;
+  flex-direction: row;
+  padding: 0px 0px 10px 10px;
+  background-color: #eee;
+  justify-content: stretch;
+`;
+
+export const TitleModal = styled.b`
+`;
+
+export const CloseModal = styled(Button)`
+`;
+
+export const ContainerButtonsModal = styled.div`
+  text-align: right;
+  padding: 10px;
+`;
+
+export const ContainerBodyModal = styled.div`
+  padding: 10px;
+
+  label {
+    margin-left: 20px;
+  }
+`;
+
+export const ContainerPesquisas = styled.div`
+  background-color: #eeee;
+  padding: 10px;
+
+  label {
+    margin-left: 20px;
+  }
+`;
+
+export const ItemPesquisa = styled.div`
+  padding-left: 20px;
+  border-radius: 10px;
+`;
+  
+export const DadosPesquisa = styled.div`
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 0px 10px 10px 0px;
+`;
+  

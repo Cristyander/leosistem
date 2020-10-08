@@ -1,5 +1,4 @@
 import React, { useEffect, useState, forwardRef } from 'react';
-import {Doughnut, Bar} from 'react-chartjs-2';
 
 import Button from '@material-ui/core/Button';
 import AddBox from '@material-ui/icons/AddBox';
@@ -23,27 +22,34 @@ import { toast } from 'react-toastify';
 import {
   BarChartSharp,
   PrintOutlined,
-  DehazeOutlined
+  DehazeOutlined,
+  CloseOutlined,
+  EditOutlined,
+  AddRounded
 } from '@material-ui/icons/';
+
+import { Chart } from '../../components/Chart';
 
 import { 
   OptionsRalacionamentos, 
   ContainerStatus, 
   BoxColorStatus, 
-  ContainerItemStatus, 
-  ContainerChart,
-  TitleChart,
-  BoxChart,
-  ContainerStatusCollumn,
-  ContainerItemStatusCollumn,
-  ContainerDoughnut,
-  PercentDoughnut,
-ContainerChartBar } from './styles';
+  ContainerItemStatus,
+  ContainerModal,
+  HeaderModal,
+  TitleModal,
+  ContainerButtonsModal,
+  ContainerBodyModal,
+  ContainerPesquisas,
+  ItemPesquisa,
+  DadosPesquisa,
+  CloseModal
+ } from './styles';
 import useStyles from '../../styles/default';
 
 import api from '../../services/api';
 import Modal from '../../components/Modal';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -74,10 +80,26 @@ export default function Relacionamento() {
 
   const [relacionamentos, setRelacionamentos] = useState([]);
   const [status, setStatus] = useState([]);
-  const [visualizaRelacionamentos, setVisualizaRelacionamentos] = useState(false);
+  const [visualizaRelacionamentos, setVisualizaRelacionamentos] = useState(true);
   const [doughnutGeral, setDoughnutGeral] = useState({});
   const [barGeral, setBarGeral] = useState({});
   const [chartCarteiras, setChartCarteiras] = useState([]);
+  const [modalClient, setModalClient] = useState({
+    id: 1,
+    classe: 'A1',
+    nome: 'Mercadão Meneses',
+    cidade: 'São Luis - Ma',
+    estado: 'MA',
+    status: 'Satisfeito',
+    pesquisa: 'Gerente: Esse mês foi muito bom o atendimento. Realmente foi ...',
+    cliente: {
+      cnpj: '842.251.253-00032/014',
+      telefone: '(62)9 9923-0142',
+      proprietario: 'Natanael Menezes',
+      gerente: 'Ribamar',
+      funcionario: 'Joana Gabriel Aparecida',
+    }
+  });
 
 const colunasGrupos = [
     { 
@@ -209,20 +231,35 @@ const colunasGrupos = [
           id: 1,
           classe: 'A1',
           nome: 'Mercadão Meneses',
-          cidade: 'São Luis',
+          cidade: 'São Luis - Ma',
           estado: 'MA',
           status: 'Satisfeito',
           pesquisa: 'Gerente: Esse mês foi muito bom o atendimento. Realmente foi ...',
+          cliente: {
+            cnpj: '842.251.253-00032/014',
+            telefone: '(62)9 9923-0142',
+            proprietario: 'Natanael Menezes',
+            gerente: 'Ribamar',
+            funcionario: 'Joana Gabriel Aparecida',
+          },
+          pesquisas: [],
         },
         {
           id: 2,
           classe: 'A1',
-          nome: 'Mercadão Meneses',
+          nome: 'Mercadão Menesessss',
           cidade: 'São Luis',
           estado: 'MA',
           status: 'Pendente',
           pesquisa: 'Gerente: Esse mês foi muito bom o atendimento. Realmente foi ...',
           parentId: 1,
+          cliente: {
+            cnpj: '842.251.253-00032/014',
+            telefone: '(62)9 9923-0142',
+            proprietario: 'Natanael Menezes',
+            gerente: 'Ribamar',
+            funcionario: 'Joana Gabriel Aparecida',
+          }
         },
         {
           id: 3,
@@ -233,6 +270,13 @@ const colunasGrupos = [
           status: 'Problema',
           pesquisa: 'Gerente: Esse mês foi muito bom o atendimento. Realmente foi ...',
           parentId: 1,
+          cliente: {
+            cnpj: '842.251.253-00032/014',
+            telefone: '(62)9 9923-0142',
+            proprietario: 'Natanael Menezes',
+            gerente: 'Ribamar',
+            funcionario: 'Joana Gabriel Aparecida',
+          }
         },
         {
           id: 4,
@@ -242,6 +286,13 @@ const colunasGrupos = [
           estado: 'MA',
           status: 'A cancelar',
           pesquisa: 'Gerente: Esse mês foi muito bom o atendimento. Realmente foi ...',
+          cliente: {
+            cnpj: '842.251.253-00032/014',
+            telefone: '(62)9 9923-0142',
+            proprietario: 'Natanael Menezes',
+            gerente: 'Ribamar',
+            funcionario: 'Joana Gabriel Aparecida',
+          }
         },
         {
           id: 5,
@@ -252,6 +303,13 @@ const colunasGrupos = [
           status: 'Satisfeito',
           pesquisa: 'Gerente: Esse mês foi muito bom o atendimento. Realmente foi ...',
           parentId: 4,
+          cliente: {
+            cnpj: '842.251.253-00032/014',
+            telefone: '(62)9 9923-0142',
+            proprietario: 'Natanael Menezes',
+            gerente: 'Ribamar',
+            funcionario: 'Joana Gabriel Aparecida',
+          }
         },
         {
           id: 6,
@@ -262,6 +320,13 @@ const colunasGrupos = [
           status: 'Cancelado',
           pesquisa: 'Gerente: Esse mês foi muito bom o atendimento. Realmente foi ...',
           parentId: 4,
+          cliente: {
+            cnpj: '842.251.253-00032/014',
+            telefone: '(62)9 9923-0142',
+            proprietario: 'Natanael Menezes',
+            gerente: 'Ribamar',
+            funcionario: 'Joana Gabriel Aparecida',
+          }
         }
       ];
 
@@ -334,7 +399,7 @@ const colunasGrupos = [
       };
 
       const dataChartCarteiras = [{
-          carteira: 'Carteira 1',
+          carteira: 'Satisfação Carteira 1',
           dataDoughnutGeral: {
             labels: [
               'Satisfeito',
@@ -391,14 +456,93 @@ const colunasGrupos = [
     loadGrupos();
   }, []);
 
-  function modalRelacionamento() {
-    return (
-      <Modal open={true} body="oi" />
-    );
-  }
+  const modalRelacionamento = (
+    <>
+      {modalClient !== '' && 
+        <Grid container>
+        <Grid item xs={12} md={12}>
+        <HeaderModal>
+        <Button
+        onClick={() => setModalClient('')}
+        style={{width: 0, marginLeft: '84%'}}
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        >
+          <CloseOutlined />
+        </Button>
+      <br />
+        <TitleModal>Mercado Menezes</TitleModal>
+        </HeaderModal>
+        <ContainerButtonsModal>
+        <Button
+        onClick={() => setModalClient('')}
+        style={{width: 200, marginRight: 10}}
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        >
+          <EditOutlined />
+          Alterar Cadastro
+        </Button>
+        <Button
+        onClick={() => setModalClient('')}
+        style={{width: 100 }}
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        >
+          <AddRounded />
+          Pesquisa
+        </Button>
+        </ContainerButtonsModal>
+        <ContainerBodyModal>
+          <label>Nome</label>: <b>{modalClient.nome}</b>
+          <label>Classe</label>: <b>{modalClient.classe}</b>
+          <br />
+          <label>Cidade/Estado</label>: <b>{modalClient.cidade}</b>
+          <label>CNPJ</label>: <b>{modalClient.cliente.cnpj}</b>
+          <br />
+          <label>Telefone</label>: <b>{modalClient.cliente.telefone}</b>
+          <br />
+          <label>Proprietário</label>: <b>{modalClient.cliente.proprietario}</b>
+          <br />
+          <label>Gerente(s)</label>: <b>{modalClient.cliente.gerente}</b>
+          <label>Funcionario(s)</label>: <b>{modalClient.cliente.funcionario}</b>
+          <br />
+          <label>Status</label>: <b>{modalClient.status}</b>
+        </ContainerBodyModal>
+        <ContainerPesquisas>
+          <ItemPesquisa style={{backgroundColor: '#51D4FD'}}>
+            <DadosPesquisa>
+              <label>Nome</label>: <b>Mercado Menezes</b>
+              <label>Classe</label>: <b>A1</b>
+              <br />
+              <label>Cidade/Estado</label>: <b>São Luis - Ma</b>
+              <label>CNPJ</label>: <b>842.251.253-00032/014</b>
+              <br />
+              <label>Telefone</label>: <b>(62)9 9923-0142</b>
+              <br />
+              <label>Proprietário</label>: <b>Natanael Menezes</b>
+              <br />
+              <label>Gerente(s)</label>: <b>Ribamar</b>
+              <label>Funcionario(s)</label>: <b>Joana Gabriel Aparecida</b>
+              <br />
+              <label>Status</label>: <b>Satisfeito</b>
+            </DadosPesquisa>
+          </ItemPesquisa>
+        </ContainerPesquisas>
+        </Grid>
+      </Grid>}
+    </>
+  );
 
   return (
     <>
+    {
+    modalClient !== '' &&
+    <Modal open={true} body={modalRelacionamento} />
+    }
     <OptionsRalacionamentos>
       <Button
         onClick={() => {}}
@@ -430,21 +574,22 @@ const colunasGrupos = [
       </OptionsRalacionamentos>
     {visualizaRelacionamentos && 
     <>
-          <MaterialTable
-            title="Grupos"
-            columns={colunasGrupos}
-            data={relacionamentos}
-            icons={tableIcons}
-            parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
-            options={{
-              actionsColumnIndex: -1,
-              addRowPosition: 'first',
-              search: false,
-              columnsButton: false,
-              toolbar: false,
-              defaultExpanded: true
-            }}
-          />
+      <MaterialTable
+        title="Grupos"
+        columns={colunasGrupos}
+        data={relacionamentos}
+        icons={tableIcons}
+        parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
+        onRowClick={(_, cliente) => setModalClient(cliente)}
+        options={{
+          actionsColumnIndex: -1,
+          addRowPosition: 'first',
+          search: false,
+          columnsButton: false,
+          toolbar: false,
+          defaultExpanded: true
+        }}
+      />
           <ContainerStatus>
           {status.map(item => {
                 switch (item.status) {
@@ -525,274 +670,14 @@ const colunasGrupos = [
         </>
         ||
         <>
-        <ContainerChart>
-        <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <BoxChart>
-          <TitleChart>
-            <b>Satisfação Geral</b>
-          </TitleChart>
-          <ContainerStatusCollumn>
-            <ContainerDoughnut>
-              <Doughnut data={doughnutGeral} width={200} height={200} options={{legend: {display: false,}}}/>
-            </ContainerDoughnut>
-            {status.map(item => {
-                switch (item.status) {
-                  case 'Satisfeito':
-                    return (
-                      <>
-                      <ContainerItemStatusCollumn>
-                        <BoxColorStatus style={{background: '#51D4FD' }} />
-                        <a>{item.status}: </a>
-                        <b>{item.total}%</b>
-                      </ContainerItemStatusCollumn>
-                      </>
-                      )
-                  case 'Pendências':
-                    return (
-                      <>
-                      <ContainerItemStatusCollumn>
-                        <BoxColorStatus style={{background: '#F8E007' }} />
-                        <a>{item.status}: </a>
-                        <b>{item.total}%</b>
-                      </ContainerItemStatusCollumn>
-                      </>
-                      )
-                  case 'Problemas':
-                    return (
-                      <>
-                      <ContainerItemStatusCollumn>
-                        <BoxColorStatus style={{background: '#FBAA1A' }} />
-                        <a>{item.status}: </a>
-                        <b>{item.total}%</b>
-                      </ContainerItemStatusCollumn>
-                      </>
-                      )
-                  case 'A cancelar':
-                    return (
-                      <>
-                      <ContainerItemStatusCollumn>
-                        <BoxColorStatus style={{background: '#FF5768' }} />
-                        <a>{item.status}: </a>
-                        <b>{item.total}%</b>
-                      </ContainerItemStatusCollumn>
-                      </>
-                      )
-                  case 'Cancelados':
-                    return (
-                      <>
-                      <ContainerItemStatusCollumn>
-                        <BoxColorStatus style={{background: '#BC9D67' }} />
-                        <a>{item.status}: </a>
-                        <b>{item.total}%</b>
-                      </ContainerItemStatusCollumn>
-                      </>
-                      )
-                  case 'Não pesquisados':
-                    return (
-                      <>
-                      <ContainerItemStatusCollumn>
-                        <BoxColorStatus style={{background: '#eee' }} />
-                        <a>{item.status}: </a>
-                        <b>{item.total}%</b>
-                      </ContainerItemStatusCollumn>
-                      </>
-                      )
-                  default: 
-                    return (
-                      <>
-                        <ContainerItemStatusCollumn>
-                        <BoxColorStatus style={{background: '#fdfdfd' }} />
-                        <a>{item.status}: </a>
-                        <a>{item.total}%</a>
-                      </ContainerItemStatusCollumn>
-                      </>
-                        )
-                }
-              }
-          )}
-          </ContainerStatusCollumn>   
-          </BoxChart>
-        </Grid>
-        <Grid item xs={12} md={8}>
-          <BoxChart>
-          <TitleChart>
-            <b>Comparativo satisfação geral</b>
-          </TitleChart>
-          <ContainerStatus>
-          <ContainerItemStatus>
-            <BoxColorStatus style={{background: '#51D4FD' }} />
-            <a>Satisfeitos</a>
-          </ContainerItemStatus>
-          <ContainerItemStatus>
-            <BoxColorStatus style={{background: '#F8E007' }} />
-            <a>Pendências</a>
-          </ContainerItemStatus>
-          <ContainerItemStatus>
-            <BoxColorStatus style={{background: '#FBAA1A' }} />
-            <a>Problemas</a>
-          </ContainerItemStatus>
-          <ContainerItemStatus>
-            <BoxColorStatus style={{background: '#FF5768' }} />
-            <a>A cancelar</a>
-          </ContainerItemStatus>
-          <ContainerItemStatus>
-            <BoxColorStatus style={{background: '#BC9D67' }} />
-            <a>Cancelados</a>
-          </ContainerItemStatus>
-          </ContainerStatus>
-          <ContainerChartBar>
-          <Bar
-          data={barGeral}
-          width={100}
-          height={50}
-          options={{
-            maintainAspectRatio: false,
-            legend: { display: false }
-          }}
-        />
-        </ContainerChartBar>
-          </BoxChart>
-        </Grid>
-      </Grid>
-      </ContainerChart>
-      {chartCarteiras.map((item) => {
-        return (
-          <>
-            <ContainerChart>
-              <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                <BoxChart>
-                <TitleChart>
-                  <b>Satisfação Geral</b>
-                </TitleChart>
-                <ContainerStatusCollumn>
-                  <ContainerDoughnut>
-                    <Doughnut data={doughnutGeral} width={200} height={200} options={{legend: {display: false,}}}/>
-                  </ContainerDoughnut>
-                  {status.map(item => {
-                      switch (item.status) {
-                        case 'Satisfeito':
-                          return (
-                            <>
-                            <ContainerItemStatusCollumn>
-                              <BoxColorStatus style={{background: '#51D4FD' }} />
-                              <a>{item.status}: </a>
-                              <b>{item.total}%</b>
-                            </ContainerItemStatusCollumn>
-                            </>
-                            )
-                        case 'Pendências':
-                          return (
-                            <>
-                            <ContainerItemStatusCollumn>
-                              <BoxColorStatus style={{background: '#F8E007' }} />
-                              <a>{item.status}: </a>
-                              <b>{item.total}%</b>
-                            </ContainerItemStatusCollumn>
-                            </>
-                            )
-                        case 'Problemas':
-                          return (
-                            <>
-                            <ContainerItemStatusCollumn>
-                              <BoxColorStatus style={{background: '#FBAA1A' }} />
-                              <a>{item.status}: </a>
-                              <b>{item.total}%</b>
-                            </ContainerItemStatusCollumn>
-                            </>
-                            )
-                        case 'A cancelar':
-                          return (
-                            <>
-                            <ContainerItemStatusCollumn>
-                              <BoxColorStatus style={{background: '#FF5768' }} />
-                              <a>{item.status}: </a>
-                              <b>{item.total}%</b>
-                            </ContainerItemStatusCollumn>
-                            </>
-                            )
-                        case 'Cancelados':
-                          return (
-                            <>
-                            <ContainerItemStatusCollumn>
-                              <BoxColorStatus style={{background: '#BC9D67' }} />
-                              <a>{item.status}: </a>
-                              <b>{item.total}%</b>
-                            </ContainerItemStatusCollumn>
-                            </>
-                            )
-                        case 'Não pesquisados':
-                          return (
-                            <>
-                            <ContainerItemStatusCollumn>
-                              <BoxColorStatus style={{background: '#eee' }} />
-                              <a>{item.status}: </a>
-                              <b>{item.total}%</b>
-                            </ContainerItemStatusCollumn>
-                            </>
-                            )
-                        default: 
-                          return (
-                            <>
-                              <ContainerItemStatusCollumn>
-                              <BoxColorStatus style={{background: '#fdfdfd' }} />
-                              <a>{item.status}: </a>
-                              <a>{item.total}%</a>
-                            </ContainerItemStatusCollumn>
-                            </>
-                              )
-                      }
-                    }
-                )}
-                </ContainerStatusCollumn>   
-                </BoxChart>
-              </Grid>
-              <Grid item xs={12} md={8}>
-                <BoxChart>
-                <TitleChart>
-                  <b>Comparativo satisfação geral</b>
-                </TitleChart>
-                <ContainerStatus>
-                <ContainerItemStatus>
-                  <BoxColorStatus style={{background: '#51D4FD' }} />
-                  <a>Satisfeitos</a>
-                </ContainerItemStatus>
-                <ContainerItemStatus>
-                  <BoxColorStatus style={{background: '#F8E007' }} />
-                  <a>Pendências</a>
-                </ContainerItemStatus>
-                <ContainerItemStatus>
-                  <BoxColorStatus style={{background: '#FBAA1A' }} />
-                  <a>Problemas</a>
-                </ContainerItemStatus>
-                <ContainerItemStatus>
-                  <BoxColorStatus style={{background: '#FF5768' }} />
-                  <a>A cancelar</a>
-                </ContainerItemStatus>
-                <ContainerItemStatus>
-                  <BoxColorStatus style={{background: '#BC9D67' }} />
-                  <a>Cancelados</a>
-                </ContainerItemStatus>
-                </ContainerStatus>
-                <ContainerChartBar>
-                <Bar
-                data={barGeral}
-                width={100}
-                height={50}
-                options={{
-                  maintainAspectRatio: false,
-                  legend: { display: false }
-                }}
-              />
-              </ContainerChartBar>
-                </BoxChart>
-              </Grid>
-            </Grid>
-            </ContainerChart>
-          </>
-        )
-      })}
+        <Chart titleDoughnutChart="Satisfação Geral" titleBarChart="Comparativo satisfação geral" dataDoughnut={doughnutGeral} status={status} dataBarChart={barGeral}/>
+        {chartCarteiras.map((item) => {
+          return (
+            <>
+            <Chart titleDoughnutChart={`Satisfação ${item.carteira}`} titleBarChart={`Comparativo satisfação ${item.carteira}`} dataDoughnut={item.dataDoughnutGeral} status={status} dataBarChart={item.dataBarGeral}/>
+            </>
+          )
+        })}
       </>
       }
     </>

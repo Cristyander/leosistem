@@ -13,6 +13,7 @@ const Modal = ({ open, body }) => {
         open={open}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        style={{marginTop: -100}}
       >
         {body}
       </Dialog>
