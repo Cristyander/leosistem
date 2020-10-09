@@ -10,13 +10,25 @@ export function* signIn({ payload }) {
   try {
     const { email, password } = payload;
 
-    const response = yield call(api.post, 'sessions', {
-      email,
-      password,
-    });
+    // const response = yield call(api.post, 'sessions', {
+    //   email,
+    //   password,
+    // });
 
-    if (response.status === 200) {
-      const { token, user } = response.data;
+    //response.status === 200
+    if (true) {
+      // const { token, user } = response.data;
+      const {token, user} = {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTYwMjIxMDA1NX0.Pvy2U855PJycC8CJnfRtGJ1BZVqWtm9JumDoQJdQnzw",
+        "user": {
+          "username": "Cristy Anderson Pereira dos Santos",
+          "email": "cristyander@hotmail.com",
+          "avatar": {
+            "id": null,
+            "url": null
+          }
+        }
+      };
 
       api.defaults.headers.Authorization = `Bearer ${token}`;
 

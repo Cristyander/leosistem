@@ -1,4 +1,5 @@
 import React, { useEffect, useState, forwardRef } from 'react';
+import { Formik } from 'formik';
 
 import Button from '@material-ui/core/Button';
 import AddBox from '@material-ui/icons/AddBox';
@@ -35,7 +36,6 @@ import {
   ContainerStatus, 
   BoxColorStatus, 
   ContainerItemStatus,
-  ContainerModal,
   HeaderModal,
   TitleModal,
   ContainerButtonsModal,
@@ -43,13 +43,15 @@ import {
   ContainerPesquisas,
   ItemPesquisa,
   DadosPesquisa,
-  CloseModal
+  ContainerLabel,
+  ContainerPrint
  } from './styles';
 import useStyles from '../../styles/default';
 
 import api from '../../services/api';
 import Modal from '../../components/Modal';
-import { Grid } from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
+import ScreenLoad from '../../components/ScreenLoad';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -84,22 +86,9 @@ export default function Relacionamento() {
   const [doughnutGeral, setDoughnutGeral] = useState({});
   const [barGeral, setBarGeral] = useState({});
   const [chartCarteiras, setChartCarteiras] = useState([]);
-  const [modalClient, setModalClient] = useState({
-    id: 1,
-    classe: 'A1',
-    nome: 'Mercadão Meneses',
-    cidade: 'São Luis - Ma',
-    estado: 'MA',
-    status: 'Satisfeito',
-    pesquisa: 'Gerente: Esse mês foi muito bom o atendimento. Realmente foi ...',
-    cliente: {
-      cnpj: '842.251.253-00032/014',
-      telefone: '(62)9 9923-0142',
-      proprietario: 'Natanael Menezes',
-      gerente: 'Ribamar',
-      funcionario: 'Joana Gabriel Aparecida',
-    }
-  });
+  const [modalClient, setModalClient] = useState('');
+  const [alterarCadastro, setAlterarCadastro] = useState(false);
+  const [addPesquisa, setAddPesquisa] = useState(false);
 
 const colunasGrupos = [
     { 
@@ -242,7 +231,24 @@ const colunasGrupos = [
             gerente: 'Ribamar',
             funcionario: 'Joana Gabriel Aparecida',
           },
-          pesquisas: [],
+          pesquisas: [{
+            status: 'Satisfeito',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'Pendências',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'A cancelar',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          }],
         },
         {
           id: 2,
@@ -259,7 +265,25 @@ const colunasGrupos = [
             proprietario: 'Natanael Menezes',
             gerente: 'Ribamar',
             funcionario: 'Joana Gabriel Aparecida',
-          }
+          },
+          pesquisas: [{
+            status: 'Satisfeito',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'Pendências',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'A cancelar',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          }],
         },
         {
           id: 3,
@@ -276,7 +300,25 @@ const colunasGrupos = [
             proprietario: 'Natanael Menezes',
             gerente: 'Ribamar',
             funcionario: 'Joana Gabriel Aparecida',
-          }
+          },
+          pesquisas: [{
+            status: 'Satisfeito',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'Pendências',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'A cancelar',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          }],
         },
         {
           id: 4,
@@ -292,7 +334,25 @@ const colunasGrupos = [
             proprietario: 'Natanael Menezes',
             gerente: 'Ribamar',
             funcionario: 'Joana Gabriel Aparecida',
-          }
+          },
+          pesquisas: [{
+            status: 'Satisfeito',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'Pendências',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'A cancelar',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          }],
         },
         {
           id: 5,
@@ -309,7 +369,25 @@ const colunasGrupos = [
             proprietario: 'Natanael Menezes',
             gerente: 'Ribamar',
             funcionario: 'Joana Gabriel Aparecida',
-          }
+          },
+          pesquisas: [{
+            status: 'Satisfeito',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'Pendências',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'A cancelar',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          }],
         },
         {
           id: 6,
@@ -326,7 +404,25 @@ const colunasGrupos = [
             proprietario: 'Natanael Menezes',
             gerente: 'Ribamar',
             funcionario: 'Joana Gabriel Aparecida',
-          }
+          },
+          pesquisas: [{
+            status: 'Satisfeito',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'Pendências',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          },
+          {
+            status: 'A cancelar',
+            data: '03 de agosto de 2020',
+            falou_com: 'Gerente Ribamar',
+            pesquisa: 'Olha esse mês foi muito bom o atendimento.'
+          }],
         }
       ];
 
@@ -452,14 +548,390 @@ const colunasGrupos = [
     }
   }
 
+  function colorsStatus(status) {
+    switch (status) {
+      case 'Satisfeito':
+        return '#51D4FD'
+      case 'Pendências':
+        return '#F8E007'
+      case 'Problema':
+        return '#FBAA1A'
+      case 'A cancelar':
+        return '#FF5768'
+      case 'Cancelado':
+        return '#BC9D67'
+      default: 
+        return '#fff'
+    }
+  }
+
+  function handlePesquisa(values) {
+    const dataPesquisa = values;
+  }
+
+  function handleAlterarCadastro(values) {
+    const dataAlterarCadastro = values;
+  }
+
   useEffect(() => {
     loadGrupos();
   }, []);
 
+  const modalAddPesquisa = (
+    <>
+      {
+        addPesquisa &&
+        <Grid container style={{width: 600}}>
+        <Grid item xs={12} md={12}>
+        <HeaderModal>
+        <Button
+        onClick={() => setAddPesquisa(false)}
+        style={{width: 0, marginLeft: '84%'}}
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        >
+          <CloseOutlined />
+        </Button>
+        <br />
+        <TitleModal>Adicionar Pesquisa em {modalClient.nome}</TitleModal>
+        </HeaderModal>
+        <ContainerBodyModal>
+        <Formik
+          initialValues={{ 
+            data: '',
+            mes: '',
+            falou_com: '',
+            pesquisa: '',
+            }}
+          onSubmit={values => {
+            handlePesquisa(values);
+          }}
+        >
+          {props => {
+            const {
+              values,
+              handleChange,
+              handleSubmit,
+            } = props;
+            return (
+              <form noValidate onSubmit={handleSubmit}>
+              <Grid container spacing={2}>
+              <Grid item xs={6} md={6}>
+                <ContainerLabel>
+                <label>
+                  Data: *
+                </label>
+                </ContainerLabel>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="nome"
+                    name="nome"
+                    value={values.data}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={6} md={6}>
+                <ContainerLabel>
+                  <label>
+                    Mês: *
+                  </label>
+                  </ContainerLabel>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="mes"
+                    name="mes"
+                    value={values.mês}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={12} md={12}>
+                <ContainerLabel>
+                <label>
+                  Falou com: *
+                </label>
+                </ContainerLabel>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="falou_com"
+                    name="falou_com"
+                    value={values.falou_com}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                </Grid>
+                <Grid container spacing={1}>
+                <Grid item xs={12} md={12}>
+                <ContainerLabel>
+                  <label>
+                    Pesquisa: *
+                  </label>
+                  </ContainerLabel>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="pesquisa"
+                    name="pesquisa"
+                    value={values.pesquisa}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                </Grid>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                >
+                  Salvar
+                </Button>
+              </form>
+            );
+          }}
+        </Formik>
+        </ContainerBodyModal>
+        </Grid>
+      </Grid>
+      }
+    </>
+  );
+
+  const modalAlterarCadastro = (
+    <>
+      {
+        alterarCadastro &&
+        <Grid container style={{width: 600}}>
+        <Grid item xs={12} md={12}>
+        <HeaderModal>
+        <Button
+        onClick={() => setAlterarCadastro(false)}
+        style={{width: 0, marginLeft: '84%'}}
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        >
+          <CloseOutlined />
+        </Button>
+        <br />
+        <TitleModal>{modalClient.nome}</TitleModal>
+        </HeaderModal>
+        <ContainerBodyModal>
+        <Formik
+          initialValues={{ 
+            nome: modalClient.nome,
+            classe: modalClient.classe,
+            cidade: modalClient.cidade,
+            estado: modalClient.estado,
+            cnpj: modalClient.cliente.cnpj,
+            telefone: modalClient.cliente.telefone,
+            }}
+          onSubmit={values => {
+            handleAlterarCadastro(values);
+          }}
+        >
+          {props => {
+            const {
+              values,
+              handleChange,
+              handleSubmit,
+            } = props;
+            return (
+              <form noValidate onSubmit={handleSubmit}>
+              <Grid container spacing={2}>
+              <Grid item xs={12} md={8}>
+                <ContainerLabel>
+                <label>
+                  Nome: *
+                </label>
+                </ContainerLabel>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="nome"
+                    name="nome"
+                    value={values.nome}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                <ContainerLabel>
+                  <label>
+                    Classe: *
+                  </label>
+                  </ContainerLabel>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="classe"
+                    name="classe"
+                    value={values.classe}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                </Grid>
+                <Grid container spacing={1}>
+                <Grid item xs={12} md={4}>
+                <ContainerLabel>
+                <label>
+                  Cidade: *
+                </label>
+                </ContainerLabel>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="cidade"
+                    name="cidade"
+                    value={values.cidade}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                <ContainerLabel>
+                  <label>
+                    Estado: *
+                  </label>
+                  </ContainerLabel>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="estado"
+                    name="estado"
+                    value={values.estado}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                <ContainerLabel>
+                  <label>
+                    Cnpj: *
+                  </label>
+                  </ContainerLabel>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="cnpj"
+                    name="cnpj"
+                    value={values.cnpj}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                </Grid>
+                <ContainerLabel>
+                  <label>
+                    Telefone:
+                  </label>
+                  </ContainerLabel>
+                  <Grid container spacing={2}>
+                <Grid item xs={6} md={5}>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="telefone"
+                    name="telefone"
+                    value={values.telefone}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={6} md={5}>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="telefone"
+                    name="telefone"
+                    value={values.telefone}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                </Grid>
+                <Grid container spacing={2}>
+                <Grid item xs={6} md={5}>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="telefone"
+                    name="telefone"
+                    value={values.telefone}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={6} md={5}>
+                  <TextField
+                    className="inputRounded"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="telefone"
+                    name="telefone"
+                    value={values.telefone}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                </Grid>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                >
+                  Salvar
+                </Button>
+              </form>
+            );
+          }}
+        </Formik>
+        </ContainerBodyModal>
+        </Grid>
+      </Grid>
+      }
+    </>
+  );
+
   const modalRelacionamento = (
     <>
       {modalClient !== '' && 
-        <Grid container>
+        <Grid container style={{width: 600}}>
         <Grid item xs={12} md={12}>
         <HeaderModal>
         <Button
@@ -472,11 +944,11 @@ const colunasGrupos = [
           <CloseOutlined />
         </Button>
       <br />
-        <TitleModal>Mercado Menezes</TitleModal>
+        <TitleModal>{modalClient.nome}</TitleModal>
         </HeaderModal>
         <ContainerButtonsModal>
         <Button
-        onClick={() => setModalClient('')}
+        onClick={() => setAlterarCadastro(true)}
         style={{width: 200, marginRight: 10}}
         variant="contained"
         color="primary"
@@ -486,7 +958,7 @@ const colunasGrupos = [
           Alterar Cadastro
         </Button>
         <Button
-        onClick={() => setModalClient('')}
+        onClick={() => setAddPesquisa(true)}
         style={{width: 100 }}
         variant="contained"
         color="primary"
@@ -513,24 +985,24 @@ const colunasGrupos = [
           <label>Status</label>: <b>{modalClient.status}</b>
         </ContainerBodyModal>
         <ContainerPesquisas>
-          <ItemPesquisa style={{backgroundColor: '#51D4FD'}}>
-            <DadosPesquisa>
-              <label>Nome</label>: <b>Mercado Menezes</b>
-              <label>Classe</label>: <b>A1</b>
-              <br />
-              <label>Cidade/Estado</label>: <b>São Luis - Ma</b>
-              <label>CNPJ</label>: <b>842.251.253-00032/014</b>
-              <br />
-              <label>Telefone</label>: <b>(62)9 9923-0142</b>
-              <br />
-              <label>Proprietário</label>: <b>Natanael Menezes</b>
-              <br />
-              <label>Gerente(s)</label>: <b>Ribamar</b>
-              <label>Funcionario(s)</label>: <b>Joana Gabriel Aparecida</b>
-              <br />
-              <label>Status</label>: <b>Satisfeito</b>
-            </DadosPesquisa>
-          </ItemPesquisa>
+        {modalClient.pesquisas !== undefined && modalClient.pesquisas.map((item) => {
+          return (
+            <>
+            <ItemPesquisa style={{backgroundColor: colorsStatus(item.status)}}>
+              <DadosPesquisa>
+                <label>Status</label>: <b>{item.status}</b>
+                <label>Data</label>: <b>{item.data}</b>
+                <br />
+                <label>Falou com</label>: <b>{item.falou_com}</b>
+                <br />
+                <label>Pesquisa</label>
+                <br />
+                <label><b>{item.pesquisa}</b></label>
+              </DadosPesquisa>
+            </ItemPesquisa>
+            </>
+          );
+        })}
         </ContainerPesquisas>
         </Grid>
       </Grid>}
@@ -540,12 +1012,20 @@ const colunasGrupos = [
   return (
     <>
     {
-    modalClient !== '' &&
-    <Modal open={true} body={modalRelacionamento} />
+      addPesquisa &&
+      <Modal open={true} body={modalAddPesquisa} />
+    }
+    {
+      modalClient !== '' &&
+      <Modal open={true} body={modalRelacionamento} />
+    }
+    {
+      alterarCadastro &&
+      <Modal open={true} body={modalAlterarCadastro} />
     }
     <OptionsRalacionamentos>
       <Button
-        onClick={() => {}}
+        onClick={() => window.print()}
         style={{width: 280, marginRight: 20}}
         variant="contained"
         color="primary"
@@ -670,6 +1150,8 @@ const colunasGrupos = [
         </>
         ||
         <>
+        <ContainerPrint>
+        <div class="divToPrint">
         <Chart titleDoughnutChart="Satisfação Geral" titleBarChart="Comparativo satisfação geral" dataDoughnut={doughnutGeral} status={status} dataBarChart={barGeral}/>
         {chartCarteiras.map((item) => {
           return (
@@ -678,6 +1160,8 @@ const colunasGrupos = [
             </>
           )
         })}
+        </div>
+        </ContainerPrint>
       </>
       }
     </>

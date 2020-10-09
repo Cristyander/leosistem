@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1, 0, 1),
   },
   paper: {
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f4f3',
   },
   defaultAlign: {
     marginTop: theme.spacing(0),
