@@ -629,8 +629,8 @@ const colunasGrupos = [
                     margin="normal"
                     required
                     fullWidth
-                    id="nome"
-                    name="nome"
+                    id="data"
+                    name="data"
                     value={values.data}
                     onChange={handleChange}
                   />
